@@ -1,0 +1,37 @@
+name: Run Ansible Hello World
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  ansible:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Ansible
+        run: |
+          sudo apt update
+          sudo apt install -y ansible
+
+      - name: Create Ansible Playbook
+        run: |
+          cat <<EOF > hello.yml
+          - name: Hello World Playbook
+            hosts: localhost
+            tasks:
+              - name: Print Hello World
+                debug:
+                  msg: "Hello, World from Ansible!"
+          EOF
+
+      - name: Run Ansible Playbook
+        run: ansible-playbook hello.yml
